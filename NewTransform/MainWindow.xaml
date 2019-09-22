@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NewTransform"
         mc:Ignorable="d"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
-        Title="Transform" MaxHeight="300" MinHeight="300" Height="300" MaxWidth="350" MinWidth="350" Width="350" WindowStyle="ToolWindow">
+        Title="Transform" MaxHeight="320" MinHeight="320" Height="320" MaxWidth="450" MinWidth="450" Width="450" WindowStyle="ToolWindow" Closing="Window_Closing">
     <Grid>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
@@ -14,26 +14,26 @@
                 <GradientStop Color="#FF6266B4" Offset="0.417"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <Image HorizontalAlignment="Left" gif:ImageBehavior.RepeatBehavior="Forever" gif:ImageBehavior.AnimatedSource="Images\Double Ring-1.5s-200px.gif" Height="40" Margin="292,182,0,0" VerticalAlignment="Top" Width="40" Source="Images/Double Ring-1.5s-200px.gif" Stretch="Fill" IsEnabled="False"/>
-        <Button Content="Сгенерировать" HorizontalAlignment="Left" Margin="10,137,0,0" VerticalAlignment="Top" Width="322" Height="40" Background="#FFDDDDDD" IsEnabled="False"/>
-        <Button Content="Конвертировать" HorizontalAlignment="Left" Margin="10,182,0,0" VerticalAlignment="Top" Width="322" Height="40"/>
-        <ProgressBar HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top" Width="322" Height="25">
-            <ProgressBar.Foreground>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FFBFF5F7" Offset="0"/>
-                    <GradientStop Color="#FF3EB9BF" Offset="1"/>
-                </LinearGradientBrush>
-            </ProgressBar.Foreground>
-        </ProgressBar>
-        <StackPanel x:Name="xlsxDropPanel" HorizontalAlignment="Left" Height="70" Margin="10,10,0,0" VerticalAlignment="Top" Width="160" Background="White" DragEnter="XlsxDropPanel_DragEnter" DragLeave="XlsxDropPanel_DragLeave" DragOver="XlsxDropPanel_DragOver" Drop="XlsxDropPanel_Drop">
-            <Image Height="15" Width="15" Margin="-80,30,40,20"/>
-            <Label x:Name="xlsxLabel" Content="Text" Margin="42,-40,38,20"/>
+        <Menu Margin="0,0,0,272" Background="White">
+            <MenuItem Header="Letters" Click="MenuItem_Click"/>
+            <GridSplitter Height="15" Width="1" Background="#FFAEA79C"/>
+            <MenuItem Header="Convert"/>
+        </Menu>
+        <Button Content="Generate" x:Name="generatedButton" HorizontalAlignment="Left" Margin="0,213,0,0" VerticalAlignment="Top" Width="442" Height="84" Background="#FFDDDDDD" Click="GeneratedButton_Click" IsEnabled="False"/>
+        <StackPanel x:Name="xlsxDropPanel" HorizontalAlignment="Left" Height="109" VerticalAlignment="Top" Width="218" Background="White" Drop="XlsxDropPanel_Drop" AllowDrop="True" Margin="0,30,0,0" MouseLeftButtonUp="XlsxDropPanel_MouseLeftButtonUp">
+            <Image Height="25" Width="25" Margin="94,25,99,20" Source="Images/excel.png"/>
+            <Label x:Name="xlsxLabel" Content="*.xlsx" HorizontalAlignment="Center" Margin="87,-20,90,20" Height="25" Width="41"/>
+            <Label x:Name="xlsxLabelTitle" Content="" HorizontalAlignment="Center" Margin="0,-11,0,20" Height="25" Width="218" IsEnabled="False"/>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Left" Height="70" Margin="177,10,0,0" VerticalAlignment="Top" Width="155" Background="White">
-            <Image HorizontalAlignment="Left" Height="15" Width="15" Margin="18,31,0,0" VerticalAlignment="Top"/>
-            <Label Content="Text" Margin="40,-25,40,20"/>
+        <StackPanel x:Name="docDropPanel" HorizontalAlignment="Left" Height="109" Margin="224,30,0,0" VerticalAlignment="Top" Width="218" Background="White" Drop="DocDropPanel_Drop" AllowDrop="True">
+            <Image HorizontalAlignment="Left" Height="25" Width="25" Margin="95,25,0,0" VerticalAlignment="Top" Source="Images/word.png"/>
+            <Label x:Name="docLabel" Content="*.doc(docx)" Margin="70,0,77,20"/>
+            <Label x:Name="docLabelTitle" Height="25" Content="" Margin="0,-9,0,20" IsEnabled="False"/>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Left" Height="47" Margin="10,85,0,0" VerticalAlignment="Top" Width="322" Background="White"/>
-
+        <StackPanel x:Name="SaveFolderPanel" HorizontalAlignment="Left" Height="65" Margin="0,143,0,0" VerticalAlignment="Top" Width="442" Background="White" Drop="SaveFolderPanel_Drop" AllowDrop="True">
+            <Image Height="25" Width="25" Source="Images/folder.png" Stretch="Fill" Margin="18,17,399,0"/>
+            <Label Content="Save directory" x:Name="SaveFolderLabel" Margin="43,-22,7,0"/>
+        </StackPanel>
+        <Image x:Name="imgGenerate" HorizontalAlignment="Left" gif:ImageBehavior.RepeatBehavior="Forever" gif:ImageBehavior.AnimatedSource="Images/Double Ring-1.5s-200px.gif" Height="40" Margin="387,257,0,0" VerticalAlignment="Top" Width="55" Source="Images/Double Ring-1.5s-200px.gif" Stretch="Fill" IsEnabled="False" Panel.ZIndex="-1"/>
     </Grid>
 </Window>
