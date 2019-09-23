@@ -6,34 +6,55 @@
         xmlns:local="clr-namespace:NewTransform"
         mc:Ignorable="d"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
-        Title="Transform" MaxHeight="320" MinHeight="320" Height="320" MaxWidth="450" MinWidth="450" Width="450" WindowStyle="ToolWindow" Closing="Window_Closing">
+        Title="Transform" MaxHeight="335" MinHeight="335" Height="335" MaxWidth="450" MinWidth="450" Width="450" WindowStyle="ToolWindow" Closing="Window_Closing">
     <Grid>
-        <Grid.Background>
-            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                <GradientStop Color="#FF4B848D" Offset="1"/>
-                <GradientStop Color="#FF6266B4" Offset="0.417"/>
-            </LinearGradientBrush>
-        </Grid.Background>
-        <Menu Margin="0,0,0,272" Background="White">
-            <MenuItem Header="Letters" Click="MenuItem_Click"/>
-            <GridSplitter Height="15" Width="1" Background="#FFAEA79C"/>
-            <MenuItem Header="Convert"/>
-        </Menu>
-        <Button Content="Generate" x:Name="generatedButton" HorizontalAlignment="Left" Margin="0,213,0,0" VerticalAlignment="Top" Width="442" Height="84" Background="#FFDDDDDD" Click="GeneratedButton_Click" IsEnabled="False"/>
-        <StackPanel x:Name="xlsxDropPanel" HorizontalAlignment="Left" Height="109" VerticalAlignment="Top" Width="218" Background="White" Drop="XlsxDropPanel_Drop" AllowDrop="True" Margin="0,30,0,0" MouseLeftButtonUp="XlsxDropPanel_MouseLeftButtonUp">
-            <Image Height="25" Width="25" Margin="94,25,99,20" Source="Images/excel.png"/>
-            <Label x:Name="xlsxLabel" Content="*.xlsx" HorizontalAlignment="Center" Margin="87,-20,90,20" Height="25" Width="41"/>
-            <Label x:Name="xlsxLabelTitle" Content="" HorizontalAlignment="Center" Margin="0,-11,0,20" Height="25" Width="218" IsEnabled="False"/>
-        </StackPanel>
-        <StackPanel x:Name="docDropPanel" HorizontalAlignment="Left" Height="109" Margin="224,30,0,0" VerticalAlignment="Top" Width="218" Background="White" Drop="DocDropPanel_Drop" AllowDrop="True">
-            <Image HorizontalAlignment="Left" Height="25" Width="25" Margin="95,25,0,0" VerticalAlignment="Top" Source="Images/word.png"/>
-            <Label x:Name="docLabel" Content="*.doc(docx)" Margin="70,0,77,20"/>
-            <Label x:Name="docLabelTitle" Height="25" Content="" Margin="0,-9,0,20" IsEnabled="False"/>
-        </StackPanel>
-        <StackPanel x:Name="SaveFolderPanel" HorizontalAlignment="Left" Height="65" Margin="0,143,0,0" VerticalAlignment="Top" Width="442" Background="White" Drop="SaveFolderPanel_Drop" AllowDrop="True">
-            <Image Height="25" Width="25" Source="Images/folder.png" Stretch="Fill" Margin="18,17,399,0"/>
-            <Label Content="Save directory" x:Name="SaveFolderLabel" Margin="43,-22,7,0"/>
-        </StackPanel>
-        <Image x:Name="imgGenerate" HorizontalAlignment="Left" gif:ImageBehavior.RepeatBehavior="Forever" gif:ImageBehavior.AnimatedSource="Images/Double Ring-1.5s-200px.gif" Height="40" Margin="387,257,0,0" VerticalAlignment="Top" Width="55" Source="Images/Double Ring-1.5s-200px.gif" Stretch="Fill" IsEnabled="False" Panel.ZIndex="-1"/>
+        <TabControl>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Images/envelope.png"/>
+                        <TextBlock Margin="3">Letters</TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <TabItem.Content>
+                    <StackPanel Background="#FF468B9B">
+                        <StackPanel x:Name="xlsxDropPanel" HorizontalAlignment="Left" Height="109" VerticalAlignment="Top" Width="218" Background="White" Drop="XlsxDropPanel_Drop" AllowDrop="True" Margin="0,0,0,0" MouseLeftButtonUp="XlsxDropPanel_MouseLeftButtonUp">
+                            <Image Height="25" Width="25" Margin="94,25,99,20" Source="Images/excel.png"/>
+                            <Label x:Name="xlsxLabel" Content="*.xlsx" HorizontalAlignment="Center" Margin="87,-20,90,20" Height="25" Width="41"/>
+                            <Label x:Name="xlsxLabelTitle" Content="" HorizontalAlignment="Center" Margin="0,-11,0,20" Height="25" Width="218" IsEnabled="False"/>
+                        </StackPanel>
+                        <StackPanel x:Name="docDropPanel" HorizontalAlignment="Left" Height="109" Margin="224,-109,0,0" VerticalAlignment="Top" Width="218" Background="White" Drop="DocDropPanel_Drop" AllowDrop="True" MouseLeftButtonUp="DocDropPanel_MouseLeftButtonUp">
+                            <Image HorizontalAlignment="Left" Height="25" Width="25" Margin="95,25,0,0" VerticalAlignment="Top" Source="Images/word.png"/>
+                            <Label x:Name="docLabel" Content="*.doc(docx)" Margin="70,0,77,20"/>
+                            <Label x:Name="docLabelTitle" Height="25" Content="" Margin="0,-12,0,20" IsEnabled="False"/>
+                        </StackPanel>
+                        <StackPanel x:Name="SaveFolderPanel" HorizontalAlignment="Left" Height="65" Margin="0,6,0,0" VerticalAlignment="Top" Width="442" Background="White" Drop="SaveFolderPanel_Drop" AllowDrop="True" MouseLeftButtonUp="SaveFolderPanel_MouseLeftButtonUp">
+                            <Image Height="25" Width="25" Source="Images/folder.png" Stretch="Fill" Margin="18,17,399,0"/>
+                            <Label Content="Save directory" x:Name="SaveFolderLabel" Margin="43,-22,7,0"/>
+                        </StackPanel>
+                        <Image x:Name="imgGenerate" HorizontalAlignment="Left" gif:ImageBehavior.RepeatBehavior="Forever" gif:ImageBehavior.AnimatedSource="Images/Double Ring-1.5s-200px.gif" Height="40" Margin="379,47,0,0" VerticalAlignment="Top" Width="55" Source="Images/Double Ring-1.5s-200px.gif" Stretch="Fill" IsEnabled="False" Panel.ZIndex="-1"/>
+                        <Button Content="Generate" x:Name="generatedButton" HorizontalAlignment="Left" Margin="0,-82,0,0" VerticalAlignment="Top" Width="436" Height="85" Background="#FFDDDDDD" Click="GeneratedButton_Click" IsEnabled="False"/>
+                    </StackPanel>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Width="80">
+                        <Ellipse Height="10" Width="10" Fill="Black" />
+                        <Image Source="Images/right-arrow.png" Width="12"/>
+                        <Rectangle Height="10" Width="10" Fill="Black" />
+                        <TextBlock Margin="3">Convert</TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <TabItem.Content>
+                    <StackPanel x:Name="ConvertPanel" Background="#FF468B9B" Drop="ConvertPanel_Drop" MouseLeftButtonUp="ConvertPanel_MouseLeftButtonUp" AllowDrop="True">
+                        <StackPanel Margin="0, 123" Width="170" Height="25">
+                            <Label Content="Drop or click for convert file(s)" Foreground="White"/>
+                            <Image x:Name="imgConvert" HorizontalAlignment="Left" gif:ImageBehavior.RepeatBehavior="Forever" gif:ImageBehavior.AnimatedSource="Images/Double Ring-1.5s-200px.gif" Height="40" Margin="246,79,-131,0" VerticalAlignment="Top" Width="55" Source="Images/Double Ring-1.5s-200px.gif" Stretch="Fill" IsEnabled="False" Panel.ZIndex="-1"/>
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem.Content>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
