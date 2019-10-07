@@ -6,10 +6,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Media.Animation;
 using Microsoft.Win32;
 using Excel = Microsoft.Office.Interop.Excel;
 using Word = Microsoft.Office.Interop.Word;
 using OfficeConvert;
+using System.Text.RegularExpressions;
 
 namespace NewTransform
 {
@@ -110,15 +112,16 @@ namespace NewTransform
 
         private void Generate()
         {
+            var WordApp = new Word.Application();
+            WordApp.Visible = false;
+
+            var WordDocument = WordApp.Documents.Open(@"" + pathDoc);
+            Excel.Application ObjWorkExcel = new Excel.Application();
+            Excel.Workbook ObjWorkBook = ObjWorkExcel.Workbooks.Open(@"" + pathXls);
+            Excel.Worksheet ObjWorkSheet = (Excel.Worksheet)ObjWorkBook.Sheets[1];
+
             try
             {
-                var WordApp = new Word.Application();
-                WordApp.Visible = false;
-
-                var WordDocument = WordApp.Documents.Open(@"" + pathDoc);
-                Excel.Application ObjWorkExcel = new Excel.Application();
-                Excel.Workbook ObjWorkBook = ObjWorkExcel.Workbooks.Open(@"" + pathXls);
-                Excel.Worksheet ObjWorkSheet = (Excel.Worksheet)ObjWorkBook.Sheets[1];
 
                 int nInLastRow = ObjWorkSheet.Cells.Find("*", System.Reflection.Missing.Value,
                     System.Reflection.Missing.Value, System.Reflection.Missing.Value,
@@ -150,22 +153,26 @@ namespace NewTransform
 
                         if (j == nInLastCol - 1)
                         {
-                            WordDocument.SaveAs(@"" + pathSave + "\\" + list[i, j] + ".docx");
-
+                            string fName = Regex.Replace(list[i, j], "[\"«»]", "");
+                            WordDocument.SaveAs(@"" + pathSave + "\\" + fName + ".docx");
                             WordDocument.Close(false, Type.Missing, Type.Missing);
                             WordDocument = WordApp.Documents.Open(@"" + pathDoc);
                         }
 
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
                 WordDocument.Close(false, Type.Missing, Type.Missing);
                 WordApp.Quit();
                 ObjWorkBook.Close(false, Type.Missing, Type.Missing);
                 ObjWorkExcel.Quit();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Возможно какой-то из выбранных файлов открыт. Закройте файл и повторите попытку.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                GC.Collect();
             }
         }
 
@@ -244,11 +251,12 @@ namespace NewTransform
             }
         }
 
-        private void ConvertPanel_Drop(object sender, DragEventArgs e)
+        private void ConvertPanelFuncDrop(DragEventArgs e)
         {
-            ConvertPanel.IsEnabled = false;
+            Dispatcher.Invoke(() => ConvertProgressBar.Visibility = Visibility.Visible);
 
             List<string> paths = new List<string>();
+
             foreach (string obj in (string[])e.Data.GetData(DataFormats.FileDrop))
                 if (Directory.Exists(obj))
                     paths.AddRange(Directory.GetFiles(obj, "*.*", SearchOption.AllDirectories));
@@ -256,30 +264,58 @@ namespace NewTransform
                     paths.Add(obj);
 
             int count = paths.Count;
+            Dispatcher.Invoke(() => ConvertProgressBar.Maximum = count);
+
             for (int i = 0; i < count; i++)
             {
                 String inputFile = paths[i];
                 int lngth = inputFile.Length;
+
                 if (inputFile[lngth - 1] == 'c' || inputFile[lngth - 2] == 'c')
                 {
                     String outputFile = String.Concat(inputFile, ".pdf");
                     Converter converter = new WordConverter();
-                    tryConvert(converter, inputFile, outputFile);
+                    tryConvert(converter, inputFile, outputFile.Replace(".docx", ""));
                 }
+
+                Dispatcher.Invoke(() => ConvertProgressBar.Value++);
+
             }
-            if(count > 0) MessageBox.Show("Конвертация завершена", "Готово");
+
+            if (count > 0)
+                MessageBox.Show("Конвертация завершена", "Готово");
+
+            Dispatcher.Invoke(() => ConvertProgressBar.Visibility = Visibility.Hidden);
+            Dispatcher.Invoke(() => ConvertLabelText.Content = "Drop or click for convert file(s)");
+        }
+
+        private async void ConvertPanel_Drop(object sender, DragEventArgs e)
+        {
+            ConvertPanel.IsEnabled = false;
+            ConvertLabelPanel.Visibility = Visibility.Hidden;
+            imgConvert.Visibility = Visibility.Visible;
+
+            await Task.Run(() => ConvertPanelFuncDrop(e));
+
+            ConvertLabelPanel.Visibility = Visibility.Visible;
+            imgConvert.Visibility = Visibility.Hidden;
             ConvertPanel.IsEnabled = true;
         }
 
-        private void ConvertPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void ConvertPanelFuncClick(MouseButtonEventArgs e)
         {
-            ConvertPanel.IsEnabled = false;
-
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Файлы docx|*.docx|Файлы doc|*.doc";
             ofd.ShowDialog();
 
             int count = ofd.FileNames.Length;
+            if (count > 0)
+            {
+                Dispatcher.Invoke(() => ConvertProgressBar.Visibility = Visibility.Visible);
+                Dispatcher.Invoke(() => ConvertLabelPanel.Visibility = Visibility.Hidden);
+                Dispatcher.Invoke(() => imgConvert.Visibility = Visibility.Visible);
+            }
+            Dispatcher.Invoke(() => ConvertProgressBar.Maximum = count);
             for (int i = 0; i < count; i++)
             {
                 String inputFile = ofd.FileNames[i];
@@ -290,9 +326,33 @@ namespace NewTransform
                     Converter converter = new WordConverter();
                     tryConvert(converter, inputFile, outputFile);
                 }
+                Dispatcher.Invoke(() => ConvertProgressBar.Value++);
             }
             if (count > 0) MessageBox.Show("Конвертация завершена", "Готово");
+
+            Dispatcher.Invoke(() => ConvertProgressBar.Visibility = Visibility.Hidden);
+            Dispatcher.Invoke(() => ConvertLabelPanel.Visibility = Visibility.Visible);
+            Dispatcher.Invoke(() => imgConvert.Visibility = Visibility.Hidden);
+            Dispatcher.Invoke(() => ConvertLabelText.Content = "Drop or click for convert file(s)");
+        }
+
+        private async void ConvertPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ConvertPanel.IsEnabled = false;
+
+            await Task.Run(() => ConvertPanelFuncClick(e));
+            
             ConvertPanel.IsEnabled = true;
+        }
+
+        private void ConvertPanel_DragEnter(object sender, DragEventArgs e)
+        {
+            Dispatcher.Invoke(() => ConvertLabelText.Content = "Are you sure?");
+        }
+
+        private void ConvertPanel_DragLeave(object sender, DragEventArgs e)
+        {
+            Dispatcher.Invoke(() => ConvertLabelText.Content = "Drop or click for convert file(s)");
         }
     }
 }

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NewTransform"
         mc:Ignorable="d"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
-        Title="Transform" MaxHeight="335" MinHeight="335" Height="335" MaxWidth="450" MinWidth="450" Width="450" WindowStyle="ToolWindow" Closing="Window_Closing">
+        Title="Transform 2.0" MaxHeight="335" MinHeight="335" Height="335" MaxWidth="450" MinWidth="450" Width="450" Closing="Window_Closing" Icon="Images/right-arrow.png">
     <Grid>
         <TabControl>
             <TabItem>
@@ -33,7 +33,14 @@
                             <Label Content="Save directory" x:Name="SaveFolderLabel" Margin="43,-22,7,0"/>
                         </StackPanel>
                         <Image x:Name="imgGenerate" HorizontalAlignment="Left" gif:ImageBehavior.RepeatBehavior="Forever" gif:ImageBehavior.AnimatedSource="Images/Double Ring-1.5s-200px.gif" Height="40" Margin="379,47,0,0" VerticalAlignment="Top" Width="55" Source="Images/Double Ring-1.5s-200px.gif" Stretch="Fill" IsEnabled="False" Panel.ZIndex="-1"/>
-                        <Button Content="Generate" x:Name="generatedButton" HorizontalAlignment="Left" Margin="0,-82,0,0" VerticalAlignment="Top" Width="436" Height="85" Background="#FFDDDDDD" Click="GeneratedButton_Click" IsEnabled="False"/>
+                        <Button Content="Generate" x:Name="generatedButton" HorizontalAlignment="Left" Margin="0,-82,0,0" VerticalAlignment="Top" Width="436" Height="85" Background="White" Click="GeneratedButton_Click">
+                            <Button.Foreground>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="#FF1019DC" Offset="1"/>
+                                    <GradientStop Color="#FF2A86B2"/>
+                                </RadialGradientBrush>
+                            </Button.Foreground>
+                        </Button>
                     </StackPanel>
                 </TabItem.Content>
             </TabItem>
@@ -47,10 +54,11 @@
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
-                    <StackPanel x:Name="ConvertPanel" Background="#FF468B9B" Drop="ConvertPanel_Drop" MouseLeftButtonUp="ConvertPanel_MouseLeftButtonUp" AllowDrop="True">
-                        <StackPanel Margin="0, 123" Width="170" Height="25">
-                            <Label Content="Drop or click for convert file(s)" Foreground="White"/>
-                            <Image x:Name="imgConvert" HorizontalAlignment="Left" gif:ImageBehavior.RepeatBehavior="Forever" gif:ImageBehavior.AnimatedSource="Images/Double Ring-1.5s-200px.gif" Height="40" Margin="246,79,-131,0" VerticalAlignment="Top" Width="55" Source="Images/Double Ring-1.5s-200px.gif" Stretch="Fill" IsEnabled="False" Panel.ZIndex="-1"/>
+                    <StackPanel x:Name="ConvertPanel" Drop="ConvertPanel_Drop" MouseLeftButtonUp="ConvertPanel_MouseLeftButtonUp" AllowDrop="True" DragEnter="ConvertPanel_DragEnter" Background="#FF468B9B" DragLeave="ConvertPanel_DragLeave">
+                        <Image x:Name="imgConvert" gif:ImageBehavior.RepeatBehavior="Forever" gif:ImageBehavior.AnimatedSource="Images/giphy.gif" HorizontalAlignment="Left" Height="270" Width="436" Source="Images/giphy.gif" Stretch="Fill" Margin="0,0,0,0" Visibility="Hidden"/>
+                        <ProgressBar x:Name="ConvertProgressBar" Height="20" Margin="0, -19, 0, 0" Background="#FF5E4674" BorderBrush="{x:Null}" Foreground="#FF468B9B" Visibility="Hidden"/>
+                        <StackPanel x:Name="ConvertLabelPanel" Margin="0, -300, 0, 0" Width="170" Height="25">
+                            <Label x:Name="ConvertLabelText" Content="Drop or click for convert file(s)" Foreground="White"/>
                         </StackPanel>
                     </StackPanel>
                 </TabItem.Content>
